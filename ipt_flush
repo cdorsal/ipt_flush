@@ -1,0 +1,36 @@
+#!/bin/sh
+
+# This script sets all policies to ACCEPT, deletes all rules and chains
+# and sets all counters to zero
+
+# Defines
+ipt="/sbin/iptables"
+
+echo "The firewall is now being shut down. All policies are set to
+ACCEPT, all rules and chains are deleted, all counters are set to zero."
+
+# Set default policies to ACCEPT everything
+$ipt -P INPUT ACCEPT
+$ipt -P FORWARD ACCEPT
+$ipt -P OUTPUT ACCEPT
+$ipt -t nat -P OUTPUT ACCEPT
+$ipt -t nat -P PREROUTING ACCEPT
+$ipt -t nat -P POSTROUTING ACCEPT
+$ipt -t mangle -P INPUT ACCEPT
+$ipt -t mangle -P OUTPUT ACCEPT
+$ipt -t mangle -P FORWARD ACCEPT
+$ipt -t mangle -P PREROUTING ACCEPT
+$ipt -t mangle -P POSTROUTING ACCEPT
+
+#Zero out all counters
+$ipt -Z
+$ipt -t nat -Z
+$ipt -t mangle -Z
+
+# Flush all rules, delete all chains
+$ipt -F
+$ipt -X
+$ipt -t nat -F
+$ipt -t nat -X
+$ipt -t mangle -F
+$ipt -t mangle -X
